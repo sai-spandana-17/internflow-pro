@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, CheckCircle2, Mail, FileText, Calendar, Sparkles, TrendingUp, Clock, Activity, Loader2, Printer, Users, Check } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, CheckCircle2, FileText, Calendar, Sparkles, TrendingUp, Clock, Activity, Loader2, Printer, Users, Check, Pencil, X as XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useStore, useToast, STATUS_LABEL, STATUS_COLOR, NEXT_STATUS, type Referral } from "@/lib/store";
+import { useStore, useToast, STATUS_LABEL, STATUS_COLOR, NEXT_STATUS, type Referral, type Application } from "@/lib/store";
 import { useServerFn } from "@tanstack/react-start";
 import { generateEssay } from "@/lib/ai.functions";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+
 
 export function AppDetailPage() {
   const { state, dispatch } = useStore();
