@@ -201,6 +201,10 @@ function reducer(s: State, a: Action): State {
     case "setNotes": return { ...s, applications: s.applications.map(x => x.id === a.id ? { ...x, notes: a.notes } : x) };
     case "setWeeklyGoal": return { ...s, settings: { ...s.settings, weeklyGoal: Math.max(1, a.goal) } };
     case "setAccentColor": return { ...s, settings: { ...s.settings, accentColor: a.color } };
+    case "setTimelineNote": return { ...s, applications: s.applications.map(x => x.id === a.appId ? { ...x, timelineNotes: { ...(x.timelineNotes ?? {}), [a.stepKey]: a.note } } : x) };
+    case "setUserName": return { ...s, user: { ...s.user, name: a.name } };
+    case "dismissReminder": return { ...s, dismissedReminders: [...s.dismissedReminders, a.id] };
+
 
     default: return s;
   }
