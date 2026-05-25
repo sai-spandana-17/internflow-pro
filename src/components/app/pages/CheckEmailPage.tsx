@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useStore } from "@/lib/store";
+import { useStore, useToast } from "@/lib/store";
+import { useDocTitle } from "@/hooks/use-doc-title";
+import { supabase } from "@/integrations/supabase/client";
 
 export function CheckEmailPage() {
+  useDocTitle("Check your email — InternFlow");
   const { state, dispatch } = useStore();
-  const [cooldown, setCooldown] = useState(0);
+  const toast = useToast();
+  const [cooldown, setCooldown] = useState(60);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -13,7 +17,16 @@ export function CheckEmailPage() {
     return () => clearTimeout(t);
   }, [cooldown]);
 
-  const resend = () => setCooldown(60);
+  const resend = async () => {
+    try {
+      const { error } = await supabase.auth.resend({ type: "signup", email: state.user.email });
+      if (error) throw error;
+      toast("Email resent");
+      setCooldown(60);
+    } catch (e) {
+      toast(e instanceof Error ? e.message : "Failed to resend", "error");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6">

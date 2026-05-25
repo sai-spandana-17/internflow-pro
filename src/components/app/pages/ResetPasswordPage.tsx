@@ -1,22 +1,35 @@
 import { useState } from "react";
-import { Lock } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore, useToast } from "@/lib/store";
+import { useDocTitle } from "@/hooks/use-doc-title";
+import { supabase } from "@/integrations/supabase/client";
 
 export function ResetPasswordPage() {
+  useDocTitle("Reset password — InternFlow");
   const { dispatch } = useStore();
   const toast = useToast();
   const [p1, setP1] = useState("");
   const [p2, setP2] = useState("");
   const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr("");
     if (p1.length < 8) { setErr("Password must be at least 8 characters."); return; }
     if (p1 !== p2) { setErr("Passwords do not match."); return; }
-    toast("Password updated");
-    dispatch({ type: "view", view: "signin" });
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: p1 });
+      if (error) throw error;
+      toast("Password updated — please sign in");
+      await supabase.auth.signOut();
+      dispatch({ type: "signout" });
+      dispatch({ type: "view", view: "signin" });
+    } catch (e2) {
+      setErr(e2 instanceof Error ? e2.message : "Failed to update password");
+    } finally { setBusy(false); }
   };
 
   return (
@@ -33,7 +46,9 @@ export function ResetPasswordPage() {
         <input type="password" value={p2} onChange={e => setP2(e.target.value)} required
           className="mt-1.5 mb-4 w-full rounded-lg px-3 py-2.5 text-sm bg-white/[0.03] border border-white/10 outline-none focus:border-[var(--brand)]/60" />
         {err && <div className="text-xs text-red-400 mb-3">{err}</div>}
-        <Button type="submit" variant="hero" className="w-full">Update password</Button>
+        <Button type="submit" variant="hero" className="w-full" disabled={busy}>
+          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update password"}
+        </Button>
       </form>
     </div>
   );
