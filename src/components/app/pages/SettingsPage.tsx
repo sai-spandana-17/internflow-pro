@@ -4,6 +4,8 @@ import { AlertTriangle, X, Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore, useToast } from "@/lib/store";
 import { PageHeader } from "./DashboardOverview";
+import { useDocTitle, APP_VERSION } from "@/hooks/use-doc-title";
+import { supabase } from "@/integrations/supabase/client";
 
 const ACCENTS: { color: string; label: string }[] = [
   { color: "#3B82F6", label: "Blue" },
@@ -14,11 +16,13 @@ const ACCENTS: { color: string; label: string }[] = [
 
 
 export function SettingsPage() {
+  useDocTitle("Settings — InternFlow");
   const { state, dispatch } = useStore();
   const toast = useToast();
   const [name, setName] = useState(state.user.name);
   const [email, setEmail] = useState(state.user.email);
   const [delOpen, setDelOpen] = useState(false);
+  const [delConfirm, setDelConfirm] = useState("");
   const [wish, setWish] = useState("");
 
   const goalPct = Math.min(100, Math.round((state.streak / state.settings.weeklyGoal) * 100));
@@ -122,14 +126,19 @@ export function SettingsPage() {
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setDelOpen(false)}>
           <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} onClick={e => e.stopPropagation()} className="glass-card rounded-2xl border border-red-500/40 p-6 max-w-sm w-full">
             <h3 className="font-display text-lg font-bold mb-2">Delete account?</h3>
-            <p className="text-sm text-muted-foreground mb-5">This action can't be undone.</p>
+            <p className="text-sm text-muted-foreground mb-4">This action can't be undone. Type <span className="text-red-300 font-mono">DELETE</span> to confirm.</p>
+            <input value={delConfirm} onChange={e => setDelConfirm(e.target.value)} placeholder="DELETE"
+              className="w-full mb-4 rounded-lg px-3 py-2 text-sm bg-white/[0.03] border border-white/10 outline-none focus:border-red-500/60" />
             <div className="flex gap-2 justify-end">
-              <Button variant="glass" onClick={() => setDelOpen(false)}>Cancel</Button>
-              <Button variant="glass" className="border-red-500/40 text-red-300 hover:bg-red-500/10" onClick={() => { dispatch({ type: "signout" }); }}>Delete</Button>
+              <Button variant="glass" onClick={() => { setDelOpen(false); setDelConfirm(""); }}>Cancel</Button>
+              <Button variant="glass" disabled={delConfirm !== "DELETE"}
+                className="border-red-500/40 text-red-300 hover:bg-red-500/10 disabled:opacity-40"
+                onClick={async () => { try { await supabase.auth.signOut(); } catch { /* ignore */ } dispatch({ type: "signout" }); }}>Delete</Button>
             </div>
           </motion.div>
         </div>
       )}
+      <div className="text-center text-[10px] text-muted-foreground pt-4">InternFlow v{APP_VERSION}</div>
     </div>
   );
 }

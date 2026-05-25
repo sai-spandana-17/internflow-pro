@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useStore, STATUS_LABEL, STATUS_COLOR, type Status } from "@/lib/store";
 import { useToast } from "@/lib/store";
 import { PageHeader } from "./DashboardOverview";
+import { useDocTitle } from "@/hooks/use-doc-title";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -17,13 +18,20 @@ const tabs: { v: Status | "all"; l: string }[] = [
 ];
 
 export function ApplicationsPage() {
+  useDocTitle("Applications — InternFlow");
   const { state, dispatch } = useStore();
   const toast = useToast();
   const [tab, setTab] = useState<Status | "all">("all");
+  const [qRaw, setQRaw] = useState("");
   const [q, setQ] = useState("");
   const [sort, setSort] = useState<"date" | "company" | "status">("date");
   const [withdrawId, setWithdrawId] = useState<string | null>(null);
   const [notesId, setNotesId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setQ(qRaw), 200);
+    return () => clearTimeout(t);
+  }, [qRaw]);
 
   const list = useMemo(() => {
     let arr = state.applications;
@@ -46,7 +54,7 @@ export function ApplicationsPage() {
       <div className="mt-6 flex flex-col md:flex-row gap-3 md:items-center">
         <div className="flex-1 flex items-center glass-card rounded-lg px-3 py-2">
           <Search className="h-4 w-4 text-muted-foreground" />
-          <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search role or company…" className="flex-1 bg-transparent px-2 text-sm outline-none" />
+          <input value={qRaw} onChange={e => setQRaw(e.target.value)} placeholder="Search role or company…" className="flex-1 bg-transparent px-2 text-sm outline-none" />
         </div>
         <select value={sort} onChange={e => setSort(e.target.value as "date" | "company" | "status")} className="glass-card rounded-lg px-3 py-2 text-sm bg-transparent [color-scheme:dark]">
           <option value="date" className="bg-[#111827]">Sort: Date</option>
