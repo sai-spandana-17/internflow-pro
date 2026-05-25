@@ -21,8 +21,12 @@ export function AppDetailPage() {
   const aiFn = useServerFn(generateEssay);
   const appId = app?.id;
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [edit, setEdit] = useState<Partial<Application>>({});
+  const dirty = Object.keys(edit).length > 0;
 
   useEffect(() => { window.scrollTo(0, 0); }, [appId]);
+
 
   useEffect(() => {
     if (!appId) return;
