@@ -129,19 +129,25 @@ export function AppDetailPage() {
         <div className="md:col-span-2 glass-card rounded-2xl p-6 md:p-8">
           <div className="flex items-center justify-between mb-4"><h3 className="font-display text-xl font-bold">Activity</h3><Activity className="h-4 w-4 text-[#06B6D4]" /></div>
           <ul className="space-y-4">
-            {[
-              { i: CheckCircle2, t: "Application submitted", time: `${days}d ago` },
-              { i: Mail, t: "Confirmation email sent", time: `${days}d ago` },
-              { i: FileText, t: "Resume parsed", time: `${days}d ago` },
-            ].map((a, i) => (
-              <li key={i} className="flex items-start gap-3">
-                <span className="h-8 w-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center"><a.i className="h-4 w-4 text-[#06B6D4]" /></span>
-                <div className="text-sm"><div>{a.t}</div><div className="text-xs text-muted-foreground">{a.time}</div></div>
-              </li>
-            ))}
+            {(() => {
+              const history = (app.statusHistory ?? []).slice().sort((a, b) => b.changedAt - a.changedAt);
+              const entries = [
+                ...history.map(h => ({ t: `Status changed to ${STATUS_LABEL[h.status]}`, time: relTime(h.changedAt), color: STATUS_COLOR[h.status] })),
+                { t: "Application submitted", time: relTime(app.submittedAt), color: "#06B6D4" },
+              ];
+              return entries.map((e, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <span className="h-8 w-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                    <CheckCircle2 className="h-4 w-4" style={{ color: e.color }} />
+                  </span>
+                  <div className="text-sm"><div>{e.t}</div><div className="text-xs text-muted-foreground">{e.time}</div></div>
+                </li>
+              ));
+            })()}
           </ul>
         </div>
       </div>
+
 
       <div className="glass-card rounded-2xl p-6 md:p-8">
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
