@@ -85,7 +85,11 @@ type Action =
   | { type: "setCoverLetter"; id: string; coverLetter: string }
   | { type: "setNotes"; id: string; notes: string }
   | { type: "setWeeklyGoal"; goal: number }
-  | { type: "setAccentColor"; color: string };
+  | { type: "setAccentColor"; color: string }
+  | { type: "setTimelineNote"; appId: string; stepKey: string; note: string }
+  | { type: "setUserName"; name: string }
+  | { type: "dismissReminder"; id: string };
+
 
 
 const today = () => new Date().toISOString().slice(0, 10);
