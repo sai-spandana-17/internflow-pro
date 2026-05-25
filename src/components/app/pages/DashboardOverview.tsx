@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
-import { Plus, TrendingUp, Briefcase, Trophy, Clock, Zap, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { Plus, TrendingUp, Briefcase, Trophy, Clock, Zap, ArrowRight, Bell, ChevronDown, ChevronUp, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore, STATUS_LABEL, STATUS_COLOR } from "@/lib/store";
 
 const EVENT_COLORS = { deadline: "var(--brand)", interview: "#F59E0B", followup: "#10B981" } as const;
+
 
 export function DashboardOverview() {
   const { state, dispatch } = useStore();
