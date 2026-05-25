@@ -57,8 +57,11 @@ function makeSamples(count: number): Application[] {
     phone: "",
     profileCompleteness: 70,
     rounds: [],
+    timelineNotes: {},
+    statusHistory: [{ status: "review", changedAt: now - Math.floor(Math.random() * 56) * DAY }],
   }));
 }
+
 
 export function AnalyticsPage() {
   const { state } = useStore();
