@@ -40,6 +40,8 @@
 :root {
   --radius: 0.75rem;
   --brand: #3B82F6;
+  --brand-rgb: 59, 130, 246;
+
 
   --background: oklch(0.15 0.03 264);
   --foreground: oklch(0.97 0.01 240);
