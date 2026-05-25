@@ -186,9 +186,56 @@ export function AppDetailPage() {
           </motion.div>
         )}
       </div>
+
+      <Sheet open={editOpen} onOpenChange={(o) => { if (!o) setEdit({}); setEditOpen(o); }}>
+        <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto bg-[#0A0F1C] border-white/10">
+          <SheetHeader>
+            <SheetTitle className="font-display flex items-center gap-2">
+              Edit application
+              {dirty && <span className="h-2 w-2 rounded-full bg-[#F59E0B]" title="Unsaved changes" />}
+            </SheetTitle>
+          </SheetHeader>
+          <div className="space-y-3 mt-4">
+            <EditField label="Role"><input className={inp} defaultValue={app.role} onChange={e => setEdit(p => ({ ...p, role: e.target.value }))} /></EditField>
+            <EditField label="Company"><input className={inp} defaultValue={app.company} onChange={e => setEdit(p => ({ ...p, company: e.target.value }))} /></EditField>
+            <EditField label="Availability">
+              <div className="flex gap-2 flex-wrap">
+                {["Immediate", "1 Month", "3 Months"].map(opt => (
+                  <label key={opt} className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10 cursor-pointer">
+                    <input type="radio" name="avail" defaultChecked={app.availability === opt} onChange={() => setEdit(p => ({ ...p, availability: opt }))} />{opt}
+                  </label>
+                ))}
+              </div>
+            </EditField>
+            <EditField label="Deadline"><input type="date" className={inp} defaultValue={app.deadline} onChange={e => setEdit(p => ({ ...p, deadline: e.target.value }))} /></EditField>
+            <EditField label="Why Join Us"><textarea rows={4} className={inp} defaultValue={app.whyJoin} maxLength={1000} onChange={e => setEdit(p => ({ ...p, whyJoin: e.target.value }))} /></EditField>
+            <EditField label="Notes"><textarea rows={3} className={inp} defaultValue={app.notes} onChange={e => setEdit(p => ({ ...p, notes: e.target.value }))} /></EditField>
+            <EditField label="Skills (comma-separated)"><input className={inp} defaultValue={app.skills.join(", ")} onChange={e => setEdit(p => ({ ...p, skills: e.target.value.split(",").map(s => s.trim()).filter(Boolean) }))} /></EditField>
+            <EditField label="GitHub"><input className={inp} defaultValue={app.github} onChange={e => setEdit(p => ({ ...p, github: e.target.value }))} /></EditField>
+            <EditField label="Portfolio"><input className={inp} defaultValue={app.portfolio} onChange={e => setEdit(p => ({ ...p, portfolio: e.target.value }))} /></EditField>
+            <EditField label="LinkedIn"><input className={inp} defaultValue={app.linkedin} onChange={e => setEdit(p => ({ ...p, linkedin: e.target.value }))} /></EditField>
+          </div>
+          <SheetFooter className="mt-6 flex-row gap-2">
+            <Button variant="glass" className="flex-1" onClick={() => { setEdit({}); setEditOpen(false); }}><XIcon className="h-4 w-4" />Cancel</Button>
+            <Button variant="hero" className="flex-1" disabled={!dirty} onClick={() => { dispatch({ type: "updateApp", id: app.id, patch: edit }); toast("Changes saved ✓"); setEdit({}); setEditOpen(false); }}>Save</Button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
+
+const inp = "w-full rounded-lg px-3 py-2 text-sm bg-white/[0.03] border border-white/10 outline-none focus:border-[var(--brand)]/60 [color-scheme:dark]";
+function EditField({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div><label className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">{label}</label><div className="mt-1">{children}</div></div>;
+}
+function relTime(ts: number) {
+  const diff = Date.now() - ts;
+  const d = Math.floor(diff / 86400000);
+  if (d <= 0) { const h = Math.floor(diff / 3600000); return h <= 0 ? "just now" : `${h}h ago`; }
+  return d === 1 ? "1d ago" : `${d}d ago`;
+}
+
 
 function Metric({ icon: Icon, l, v, sub }: { icon: typeof Calendar; l: string; v: string; sub: string }) {
   return (
