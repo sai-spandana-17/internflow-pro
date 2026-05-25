@@ -52,11 +52,12 @@ export interface State {
     notifEmail: boolean; notifStatus: boolean; notifDigest: boolean;
     weeklyGoal: number; wishlist: string[];
   };
-
+  dismissedReminders: string[];
   emailModalAppId: string | null;
   showConfetti: boolean;
 }
-export type View = "signin" | "landing" | "dashboard" | "apps" | "newapp" | "analytics" | "calendar" | "documents" | "interview" | "settings" | "appdetail";
+export type View = "signin" | "landing" | "dashboard" | "apps" | "newapp" | "analytics" | "calendar" | "documents" | "interview" | "settings" | "appdetail" | "goals" | "profile" | "privacy" | "terms" | "checkemail" | "resetpassword";
+
 
 type Action =
   | { type: "auth"; user: User }
