@@ -97,7 +97,9 @@ export function AppDetailPage() {
               Advance Status<ArrowRight className="h-4 w-4" />
             </Button>
           )}
+          <Button variant="glass" onClick={() => { setEdit({}); setEditOpen(true); }}><Pencil className="h-4 w-4" />Edit</Button>
           <Button variant="glass" onClick={exportPdf}><Printer className="h-4 w-4" />Export</Button>
+
         </div>
       </div>
 
