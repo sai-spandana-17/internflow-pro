@@ -83,13 +83,14 @@
     background: rgba(17, 24, 39, 0.8);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(var(--brand-rgb), 0.15);
   }
   .dot-grid {
-    background-image: radial-gradient(rgba(59, 130, 246, 0.18) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(var(--brand-rgb), 0.18) 1px, transparent 1px);
     background-size: 24px 24px;
     animation: dot-drift 30s linear infinite;
   }
+
   @keyframes dot-drift {
     from { background-position: 0 0; }
     to { background-position: 24px 24px; }
