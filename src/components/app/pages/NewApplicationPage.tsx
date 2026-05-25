@@ -89,6 +89,9 @@ export function NewApplicationPage() {
       resumeName: resume?.name, projectName: project?.name,
       profileCompleteness: Math.min(100, 60 + skills.length * 5),
       rounds: [],
+      timelineNotes: {},
+      statusHistory: [{ status: "review", changedAt: Date.now() }],
+
     };
     dispatch({ type: "addApp", app });
     if (resume) dispatch({ type: "addDoc", doc: { id: crypto.randomUUID(), name: resume.name, type: "Resume", size: resume.size, uploadedAt: Date.now(), appId: app.id, version: "v1", ext: resume.name.split(".").pop() || "pdf" } });
