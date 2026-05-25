@@ -151,9 +151,11 @@ const initial: State = {
   streak: 5,
   lastActivityDate: "",
   settings: { accent: "blue", accentColor: "#3B82F6", notifEmail: true, notifStatus: true, notifDigest: false, weeklyGoal: 5, wishlist: ["Anthropic", "Vercel", "Linear"] },
+  dismissedReminders: [],
   emailModalAppId: null,
   showConfetti: false,
 };
+
 
 function reducer(s: State, a: Action): State {
   switch (a.type) {
