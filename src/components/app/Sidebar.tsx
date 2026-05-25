@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { LayoutDashboard, Files, BarChart3, Calendar as CalIcon, FolderOpen, BrainCircuit, Settings as SettingsIcon, Zap, Flame, LogOut, MoreHorizontal } from "lucide-react";
+import { LayoutDashboard, Files, BarChart3, Calendar as CalIcon, FolderOpen, BrainCircuit, Settings as SettingsIcon, Zap, Flame, LogOut, MoreHorizontal, Target } from "lucide-react";
 import { useStore, type View } from "@/lib/store";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 
@@ -8,11 +8,13 @@ const items: { view: View; label: string; icon: typeof LayoutDashboard }[] = [
   { view: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { view: "apps", label: "Applications", icon: Files },
   { view: "analytics", label: "Analytics", icon: BarChart3 },
+  { view: "goals", label: "Goals", icon: Target },
   { view: "calendar", label: "Calendar", icon: CalIcon },
   { view: "documents", label: "Documents", icon: FolderOpen },
   { view: "interview", label: "Interview Prep", icon: BrainCircuit },
   { view: "settings", label: "Settings", icon: SettingsIcon },
 ];
+
 
 export function Sidebar() {
   const { state, dispatch } = useStore();
