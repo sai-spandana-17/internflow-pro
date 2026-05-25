@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { ArrowLeft, ArrowRight, CheckCircle2, FileText, Calendar, Sparkles, TrendingUp, Clock, Activity, Loader2, Printer, Users, Check, Pencil, X as XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore, useToast, STATUS_LABEL, STATUS_COLOR, NEXT_STATUS, type Referral, type Application } from "@/lib/store";
