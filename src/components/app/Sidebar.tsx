@@ -79,18 +79,19 @@ export function Sidebar() {
 
         <div className="pt-4 border-t border-white/5">
           <div className="flex items-center gap-3 px-2">
-            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[var(--brand)] to-[#06B6D4] flex items-center justify-center text-sm font-bold">
+            <button onClick={() => dispatch({ type: "view", view: "profile" })} className="h-9 w-9 rounded-full bg-gradient-to-br from-[var(--brand)] to-[#06B6D4] flex items-center justify-center text-sm font-bold hover:ring-2 hover:ring-white/20 transition">
               {state.user.name.split(" ").map(p => p[0]).slice(0, 2).join("")}
-            </div>
-            <div className="flex-1 min-w-0">
+            </button>
+            <button onClick={() => dispatch({ type: "view", view: "profile" })} className="flex-1 min-w-0 text-left">
               <div className="text-sm font-semibold truncate">{state.user.name}</div>
               <div className="text-[10px] text-muted-foreground truncate">{state.user.email}</div>
-            </div>
+            </button>
             <button onClick={() => dispatch({ type: "signout" })} className="p-1.5 text-muted-foreground hover:text-foreground">
               <LogOut className="h-4 w-4" />
             </button>
           </div>
         </div>
+
       </aside>
 
       {/* Mobile bottom nav */}
