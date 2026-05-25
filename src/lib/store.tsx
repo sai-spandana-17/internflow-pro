@@ -166,17 +166,19 @@ function reducer(s: State, a: Action): State {
     case "addApp": {
       const day = today();
       const sameDay = s.lastActivityDate === day;
+      const seeded: Application = { ...a.app, statusHistory: a.app.statusHistory && a.app.statusHistory.length ? a.app.statusHistory : [{ status: "review", changedAt: Date.now() }], timelineNotes: a.app.timelineNotes ?? {} };
       return {
         ...s,
-        applications: [a.app, ...s.applications],
+        applications: [seeded, ...s.applications],
         streak: sameDay ? s.streak : s.streak + 1,
         lastActivityDate: day,
         showConfetti: true,
-        emailModalAppId: a.app.id,
+        emailModalAppId: seeded.id,
       };
     }
     case "updateApp": return { ...s, applications: s.applications.map(x => x.id === a.id ? { ...x, ...a.patch } : x) };
-    case "advanceStatus": return { ...s, applications: s.applications.map(x => x.id === a.id ? { ...x, status: NEXT_STATUS[x.status] } : x) };
+    case "advanceStatus": return { ...s, applications: s.applications.map(x => { if (x.id !== a.id) return x; const ns = NEXT_STATUS[x.status]; return { ...x, status: ns, statusHistory: [...(x.statusHistory ?? []), { status: ns, changedAt: Date.now() }] }; }) };
+
     case "withdrawApp": return { ...s, applications: s.applications.filter(x => x.id !== a.id) };
     case "addEvent": return { ...s, events: [...s.events, a.event] };
     case "addDoc": return { ...s, documents: [a.doc, ...s.documents] };
