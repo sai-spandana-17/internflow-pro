@@ -26,7 +26,10 @@ export interface Application {
   resumeName?: string; projectName?: string; profileCompleteness: number;
   referral?: Referral; coverLetter?: string;
   rounds: InterviewRound[];
+  timelineNotes: Record<string, string>;
+  statusHistory: { status: Status; changedAt: number }[];
 }
+
 
 export interface Toast { id: string; message: string; kind: "success" | "error" | "info"; }
 export interface User { name: string; email: string; avatar?: string; }
