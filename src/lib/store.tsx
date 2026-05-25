@@ -94,7 +94,7 @@ type Action =
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-const seedApps: Application[] = [
+const seedAppsRaw: Omit<Application, "timelineNotes" | "statusHistory">[] = [
   {
     id: "a1", role: "Frontend Engineering", company: "Vercel", companyIndustry: "Developer Tools", companyLocation: "San Francisco, CA",
     status: "interview", submittedAt: Date.now() - 1000 * 60 * 60 * 24 * 12,
@@ -121,6 +121,13 @@ const seedApps: Application[] = [
     resumeName: "AlexRivera_Resume.pdf", profileCompleteness: 96, rounds: [],
   },
 ];
+
+const seedApps: Application[] = seedAppsRaw.map(a => ({
+  ...a,
+  timelineNotes: {},
+  statusHistory: [{ status: "review", changedAt: a.submittedAt }, ...(a.status !== "review" ? [{ status: a.status, changedAt: a.submittedAt + 1000 * 60 * 60 * 24 }] : [])],
+}));
+
 
 const seedDocs: AppDoc[] = [
   { id: "d1", name: "AlexRivera_Resume_v3.pdf", type: "Resume", size: 240_400, uploadedAt: Date.now() - 86400000, appId: "a1", version: "v3", ext: "pdf" },
