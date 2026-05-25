@@ -226,6 +226,6 @@ export function useToast() {
   return (message: string, kind: Toast["kind"] = "success") => {
     const id = crypto.randomUUID();
     dispatch({ type: "toast", toast: { id, message, kind } });
-    setTimeout(() => dispatch({ type: "dismissToast", id }), 3000);
+    setTimeout(() => dispatch({ type: "dismissToast", id }), kind === "error" ? 5000 : 3000);
   };
 }
