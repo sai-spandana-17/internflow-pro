@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Loader2 } from "lucide-react";
 import { useStore } from "@/lib/store";
+import { supabase } from "@/integrations/supabase/client";
 
 import { Sidebar } from "./Sidebar";
 import { SignInPage } from "./SignIn";
@@ -35,15 +37,63 @@ const ACCENT_RGB: Record<string, string> = {
 };
 
 export function AppShell() {
-  const { state } = useStore();
+  const { state, dispatch } = useStore();
+  const [bootstrapping, setBootstrapping] = useState(true);
 
+  // Accent CSS var
   useEffect(() => {
     const color = state.settings.accentColor;
     document.documentElement.style.setProperty("--brand", color);
     document.documentElement.style.setProperty("--accent", color);
-    const rgb = ACCENT_RGB[color] ?? "59, 130, 246";
-    document.documentElement.style.setProperty("--brand-rgb", rgb);
+    document.documentElement.style.setProperty("--brand-rgb", ACCENT_RGB[color] ?? "59, 130, 246");
   }, [state.settings.accentColor]);
+
+  // Auth bootstrap + listener
+  useEffect(() => {
+    let mounted = true;
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      if (event === "PASSWORD_RECOVERY") {
+        dispatch({ type: "view", view: "resetpassword" });
+        return;
+      }
+      if (event === "SIGNED_IN" && session?.user) {
+        const u = session.user;
+        const name = (u.user_metadata?.full_name as string | undefined)
+          || u.email?.split("@")[0]?.replace(/\W/g, " ").replace(/\b\w/g, c => c.toUpperCase())
+          || "Explorer";
+        dispatch({ type: "auth", user: { name, email: u.email ?? "" } });
+      }
+      if (event === "SIGNED_OUT") {
+        dispatch({ type: "signout" });
+      }
+    });
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      const s = data.session;
+      if (s?.user) {
+        const u = s.user;
+        const name = (u.user_metadata?.full_name as string | undefined)
+          || u.email?.split("@")[0]?.replace(/\W/g, " ").replace(/\b\w/g, c => c.toUpperCase())
+          || "Explorer";
+        dispatch({ type: "auth", user: { name, email: u.email ?? "" } });
+      }
+      setBootstrapping(false);
+    }).catch(() => setBootstrapping(false));
+
+    return () => { mounted = false; subscription.unsubscribe(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (bootstrapping) {
+    return (
+      <div className="min-h-screen bg-app flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-[#06B6D4]" />
+      </div>
+    );
+  }
 
   if (!state.authed) {
     return (
@@ -89,6 +139,7 @@ export function AppShell() {
             {state.view === "profile" && <ProfilePage />}
             {state.view === "privacy" && <PrivacyPage />}
             {state.view === "terms" && <TermsPage />}
+            {state.view === "resetpassword" && <ResetPasswordPage />}
           </motion.div>
         </AnimatePresence>
       </main>
@@ -101,4 +152,3 @@ export function AppShell() {
     </div>
   );
 }
-

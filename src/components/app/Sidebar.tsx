@@ -3,6 +3,7 @@ import { useState } from "react";
 import { LayoutDashboard, Files, BarChart3, Calendar as CalIcon, FolderOpen, BrainCircuit, Settings as SettingsIcon, Zap, Flame, LogOut, MoreHorizontal, Target } from "lucide-react";
 import { useStore, type View } from "@/lib/store";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import { supabase } from "@/integrations/supabase/client";
 
 const items: { view: View; label: string; icon: typeof LayoutDashboard }[] = [
   { view: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -86,7 +87,7 @@ export function Sidebar() {
               <div className="text-sm font-semibold truncate">{state.user.name}</div>
               <div className="text-[10px] text-muted-foreground truncate">{state.user.email}</div>
             </button>
-            <button onClick={() => dispatch({ type: "signout" })} className="p-1.5 text-muted-foreground hover:text-foreground">
+            <button onClick={async () => { try { await supabase.auth.signOut(); } catch { /* ignore */ } dispatch({ type: "signout" }); }} className="p-1.5 text-muted-foreground hover:text-foreground">
               <LogOut className="h-4 w-4" />
             </button>
           </div>
@@ -95,7 +96,7 @@ export function Sidebar() {
       </aside>
 
       {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 glass-card border-t border-white/10 flex justify-around py-2 px-2">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 glass-card border-t border-white/10 flex justify-around py-2 px-2 pb-[env(safe-area-inset-bottom)]">
         {items.slice(0, 4).map((it) => {
           const active = state.view === it.view;
           return (
@@ -125,7 +126,7 @@ export function Sidebar() {
                   <span>{it.label}</span>
                 </button>
               ))}
-              <button onClick={() => { dispatch({ type: "signout" }); setMoreOpen(false); }}
+              <button onClick={async () => { try { await supabase.auth.signOut(); } catch { /* ignore */ } dispatch({ type: "signout" }); setMoreOpen(false); }}
                 className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/5 text-sm text-red-400">
                 <LogOut className="h-4 w-4" />
                 <span>Sign out</span>
