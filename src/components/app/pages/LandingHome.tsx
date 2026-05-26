@@ -99,7 +99,7 @@ export function LandingHome() {
             <button onClick={() => scrollTo("features")} className="hover:text-foreground">Features</button>
             <button onClick={() => scrollTo("how")} className="hover:text-foreground">How it works</button>
             <button onClick={() => go("signin")} className="hover:text-foreground">Sign In</button>
-            <Button variant="hero" size="sm" onClick={() => go("signin")}>Get Started <ArrowRight className="h-3.5 w-3.5" /></Button>
+            <Button variant="hero" size="sm" onClick={() => go("signin")}>Start Free <ArrowRight className="h-3.5 w-3.5" /></Button>
           </nav>
           <button onClick={() => setMenuOpen(true)} className="md:hidden p-2 text-foreground"><Menu className="h-5 w-5" /></button>
         </div>
@@ -117,7 +117,7 @@ export function LandingHome() {
               <button onClick={() => scrollTo("features")} className="text-left py-2">Features</button>
               <button onClick={() => scrollTo("how")} className="text-left py-2">How it works</button>
               <button onClick={() => go("signin")} className="text-left py-2">Sign In</button>
-              <Button variant="hero" size="lg" onClick={() => go("signin")}>Get Started <ArrowRight className="h-4 w-4" /></Button>
+              <Button variant="hero" size="lg" onClick={() => go("signin")}>Start Free <ArrowRight className="h-4 w-4" /></Button>
             </div>
           </motion.div>
         )}
@@ -146,7 +146,7 @@ export function LandingHome() {
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.0, duration: 0.6 }}
             className="mt-10 flex flex-wrap justify-center gap-3">
             <Button variant="hero" size="lg" onClick={() => go("signin")} className="h-12 px-7 text-base">
-              Start Free <ArrowRight className="h-4 w-4" />
+              Get Started <ArrowRight className="h-4 w-4" />
             </Button>
             <Button variant="glass" size="lg" onClick={() => scrollTo("how")} className="h-12 px-6 text-base">
               See how it works <ArrowDown className="h-4 w-4" />
