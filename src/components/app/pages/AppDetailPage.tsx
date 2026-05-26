@@ -62,14 +62,17 @@ export function AppDetailPage() {
   const exportPdf = () => {
     const w = window.open("", "_blank");
     if (!w) return;
-    w.document.write(`<html><head><title>${app.company} - ${app.role}</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto;color:#111;}h1{margin:0 0 4px;}h2{margin:24px 0 6px;border-bottom:1px solid #ddd;padding-bottom:4px;}p{line-height:1.5;}</style></head><body>
-      <h1>${app.role} — ${app.company}</h1>
-      <p><strong>Status:</strong> ${STATUS_LABEL[app.status]} · <strong>Submitted:</strong> ${new Date(app.submittedAt).toLocaleDateString()}</p>
-      <h2>Applicant</h2><p>${app.fullName} · ${app.email} · ${app.phone}</p>
-      <h2>Skills</h2><p>${app.skills.join(", ")}</p>
-      <h2>Why Join</h2><p>${app.whyJoin}</p>
-      ${app.notes ? `<h2>Notes</h2><p>${app.notes}</p>` : ""}
-      <h2>Timeline</h2><ul>${timeline.map(t => `<li>${t.l} (${t.k})</li>`).join("")}</ul>
+    const esc = (s: unknown) => String(s ?? "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    w.document.write(`<html><head><title>${esc(app.company)} - ${esc(app.role)}</title><style>body{font-family:system-ui;padding:40px;max-width:720px;margin:auto;color:#111;}h1{margin:0 0 4px;}h2{margin:24px 0 6px;border-bottom:1px solid #ddd;padding-bottom:4px;}p{line-height:1.5;}</style></head><body>
+      <h1>${esc(app.role)} — ${esc(app.company)}</h1>
+      <p><strong>Status:</strong> ${esc(STATUS_LABEL[app.status])} · <strong>Submitted:</strong> ${esc(new Date(app.submittedAt).toLocaleDateString())}</p>
+      <h2>Applicant</h2><p>${esc(app.fullName)} · ${esc(app.email)} · ${esc(app.phone)}</p>
+      <h2>Skills</h2><p>${esc(app.skills.join(", "))}</p>
+      <h2>Why Join</h2><p>${esc(app.whyJoin)}</p>
+      ${app.notes ? `<h2>Notes</h2><p>${esc(app.notes)}</p>` : ""}
+      <h2>Timeline</h2><ul>${timeline.map(t => `<li>${esc(t.l)} (${esc(t.k)})</li>`).join("")}</ul>
       </body></html>`);
     w.document.close();
     setTimeout(() => w.print(), 250);

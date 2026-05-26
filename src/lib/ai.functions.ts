@@ -1,9 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
 import { generateText } from "ai";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+const InputSchema = z.object({
+  role: z.string().trim().min(1).max(120),
+  company: z.string().trim().min(1).max(120),
+  skills: z.array(z.string().trim().min(1).max(60)).max(8).optional(),
+  kind: z.enum(["essay", "cover"]),
+});
 
 export const generateEssay = createServerFn({ method: "POST" })
-  .inputValidator((d: { role: string; company: string; skills?: string[]; kind: "essay" | "cover" }) => d)
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => InputSchema.parse(d))
   .handler(async ({ data }) => {
     const key = process.env.LOVABLE_API_KEY;
     if (!key) throw new Error("Missing LOVABLE_API_KEY");
